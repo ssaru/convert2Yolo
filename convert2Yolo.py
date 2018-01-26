@@ -374,10 +374,14 @@ class convert2Yolo(object):
                 if len(objects) == 0:
                     print(color.BOLD + color.RED + "ERROR : can't find object tag" + color.END)
 
+
                     if os.path.exists(xml_path):
+                        xml_file.close()
                         os.remove(xml_path)
                     if os.path.exists(img_path):
+                        xml_file.close()
                         os.remove(img_path)
+
                     continue
 
                 # open Image file
@@ -409,8 +413,10 @@ class convert2Yolo(object):
                     bndbox = object.find('bndbox')
                     if bndbox == None:
                         if os.path.exists(xml_path):
+                            xml_file.close()
                             os.remove(xml_path)
                         if os.path.exists(img_path):
+                            xml_file.close()
                             os.remove(img_path)
                         raise Exception("can't find bndbox tag")
 
