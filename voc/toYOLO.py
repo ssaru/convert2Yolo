@@ -228,7 +228,8 @@ def VocPascal(converter):
             ##########################################
             # Write manifest contents                #
             ##########################################
-            manifest.writelines('%s\n' % (image_file))
+            if (file_size != 0):
+                manifest.writelines('%s\n' % (image_file))
             logger.put(degree='notice', msg="------------------------- Finish XML Parsing -------------------------")
 
     except Exception as e:
