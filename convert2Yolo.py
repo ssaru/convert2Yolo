@@ -22,16 +22,14 @@ class color:
 
 class convert2Yolo(object):
 
-    def __init__(self, classes_path, image_dir = "example/voc/JPEG/", anno_dir = "example/voc/label/", label_dir = "example/voc/results/"):
+    def __init__(self, classes_path, image_type="jpg", image_dir = "example/voc/JPEG/", anno_dir = "example/voc/label/", label_dir = "example/voc/results/", manifest_dir="example/voc/"):
 
         self.classes = self.read_class(classes_path)
-
-        self.root_dir = getcwd() + "/"
         self.image_dir = image_dir
         self.anno_dir = anno_dir
-        self.label_dir = label_dir
-
-        self.label_list = "train"
+        self.output_dir = label_dir
+        self.image_type = "." + image_type
+        self.manifest_dir = manifest_dir
 
     def convertCoordinate(self,size, box):
         dw = 1. / size[0]

@@ -14,7 +14,7 @@ if __name__ == '__main__':
     if len(sys.argv) < 4:
         print("need more parameter : [class file path] [jpeg file path] [annotation file path] [result file path]")
         print("it will process default parameter")
-        print("default execute command is 'python3 voc.py test.names example/voc/JPEG/ example/voc/label/ example/voc/results/'")
+        print("default execute command is 'python3 voc_example.py test.names example/voc/JPEG/ example/voc/label/ example/voc/results/'")
 
     else:
         if sys.argv[1] is not None:
