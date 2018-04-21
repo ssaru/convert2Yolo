@@ -6,10 +6,12 @@ voc = VocPascal()
 
 path = "example/voc/label/000001.xml"
 
-data = voc.parse(path)
+reaction, data = voc.parse(path)
 
 print(data)
+print(reaction)
 
-xml = voc.generate(data)
+reaction, xml = voc.generate(data)
 
 dump(xml)
+print(reaction)
