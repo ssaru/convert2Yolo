@@ -12,9 +12,7 @@ from xml.etree.ElementTree import dump
 """
 {
     "filename" :      
-                {
-                    "folder" : <string>
-                    "filename" : <string>                            
+                {                  
                     "size" :
                                 {
                                     "width" : <string>
@@ -81,14 +79,6 @@ class VocPascal:
 
                 xml_annotation = Element("annotation")
 
-                xml_folder = Element("folder")
-                xml_folder.text = element["folder"]
-                xml_annotation.append(xml_folder)
-
-                xml_filename = Element("filename")
-                xml_filename.text = element["filename"]
-                xml_annotation.append(xml_filename)
-
                 xml_size = Element("size")
                 xml_width = Element("width")
                 xml_width.text = element["size"]["width"]
@@ -154,7 +144,7 @@ class VocPascal:
 
                 self.xml_indent(xml_annotation)
 
-                xml_list[element["filename"].split(".")[0]] = xml_annotation
+                xml_list[key.split(".")[0]] = xml_annotation
 
             return True, xml_list
 
@@ -240,13 +230,11 @@ class VocPascal:
                     obj_index += 1
 
                 annotation = {
-                    "folder": root.find("folder").text,
-                    "filename": root.find("filename").text,
                     "size": size,
                     "objects": obj
                 }
 
-                data[annotation["filename"].split(".")[0]] = annotation
+                data[root.find("filename").text.split(".")[0]] = annotation
 
             return True, data
 
@@ -265,115 +253,43 @@ class Coco:
     Handler Class for VOC PASCAL Format
     """
 
-    def __init__(self):
-        self.cls_list = {'1': 'person',
-                         '2': 'bicycle',
-                         '3': 'car',
-                         '4': 'motorcycle',
-                         '5': 'airplane',
-                         '6': 'bus',
-                         '7': 'train',
-                         '8': 'truck',
-                         '9': 'boat',
-                         '10': 'traffic_light',
-                         '11': 'fire_hydrant',
-                         '12': 'unknown',
-                         '13': 'stop_sign',
-                         '14': 'parking_meter',
-                         '15': 'bench',
-                         '16': 'bird',
-                         '17': 'cat',
-                         '18': 'dog',
-                         '19': 'horse',
-                         '20': 'sheep',
-                         '21': 'cow',
-                         '22': 'elephant',
-                         '23': 'bear',
-                         '24': 'zebra',
-                         '25': 'giraffe',
-                         '26': 'unknown',
-                         '27': 'backpack',
-                         '28': 'umbrella',
-                         '29': 'unknown',
-                         '30': 'unknown',
-                         '31': 'handbag',
-                         '32': 'tie',
-                         '33': 'suitcase',
-                         '34': 'frisbee',
-                         '35': 'skis',
-                         '36': 'snowboard',
-                         '37': 'sports_ball',
-                         '38': 'kite',
-                         '39': 'baseball_bat',
-                         '40': 'baseball_glove',
-                         '41': 'skateboard',
-                         '42': 'surfboard',
-                         '43': 'tennis_racket',
-                         '44': 'bottle',
-                         '45': 'unknown',
-                         '46': 'wine_glass',
-                         '47': 'cup',
-                         '48': 'fork',
-                         '49': 'knife',
-                         '50': 'spoon',
-                         '51': 'bowl',
-                         '52': 'banana',
-                         '53': 'apple',
-                         '54': 'sandwich',
-                         '55': 'orange',
-                         '56': 'broccoli',
-                         '57': 'carrot',
-                         '58': 'hot_dog',
-                         '59': 'pizza',
-                         '60': 'donut',
-                         '61': 'cake',
-                         '62': 'chair',
-                         '63': 'couch',
-                         '64': 'potted_plant',
-                         '65': 'bed',
-                         '66': 'unknown',
-                         '67': 'dining_table',
-                         '68': 'unknown',
-                         '69': 'unknown',
-                         '70': 'toilet',
-                         '71': 'unknown',
-                         '72': 'tv',
-                         '73': 'laptop',
-                         '74': 'mouse',
-                         '75': 'remote',
-                         '76': 'keyboard',
-                         '77': 'cell_phone',
-                         '78': 'microwave',
-                         '79': 'oven',
-                         '80': 'toaster',
-                         '81': 'sink',
-                         '82': 'refrigerator',
-                         '83': 'unknown',
-                         '84': 'book',
-                         '85': 'clock',
-                         '86': 'vase',
-                         '87': 'scissors',
-                         '88': 'teddy_bear',
-                         '89': 'hair_drier',
-                         '90': 'toothbrush',
-                         }
+    @staticmethod
+    def parse(json_path):
 
-    def parse(self,path):
-        json_data = json.load(open(path))
+        json_data = json.load(open(json_path))
+
+        images_info = json_data["images"]
+        cls_info = json_data["categories"]
+
 
         data = {}
 
         for anno in json_data["annotations"]:
 
             image_id = anno["image_id"]
-            image_name = str(anno["image_id"]).zfill(12)
+            print("image id : {}".format(image_id))
+
+            for info in images_info:
+                    if info["id"] == image_id:
+                        filename, img_width, img_height = info["file_name"], info["width"], info["height"]
+                        print("filename : {}".format(filename))
+                        print("image width : {}".format(img_width))
+                        print("image height : {}".format(img_height))
+
+            '''
             cls_idx = str(anno["category_id"])
-            cls = str(self.cls_list[cls_idx])
+            #cls = str(self.cls_list[cls_idx])
             box = [int(anno["bbox"][0]),int(anno["bbox"][1]), int(anno["bbox"][2]), int(anno["bbox"][3])]
 
             obj = {
                 "name": cls,
                 "box": box
             }
+            '''
 
-        
+            break
+        #print(json_data["images"])
+        #print(json_data["categories"])
+
+
+

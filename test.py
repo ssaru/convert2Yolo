@@ -1,4 +1,4 @@
-
+'''
 from xml.etree.ElementTree import dump
 
 from Format import VocPascal
@@ -49,4 +49,3 @@ coco = Coco()
 
 coco.parse("/media/keti-1080ti/Martin/DataSet/COCO/annotations_trainval2014/annotations/instances_train2014.json")
 
-'''
