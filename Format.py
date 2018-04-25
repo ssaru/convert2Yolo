@@ -267,25 +267,26 @@ class Coco:
         for anno in json_data["annotations"]:
 
             image_id = anno["image_id"]
+            cls_id = anno["category_id"]
             print("image id : {}".format(image_id))
 
             for info in images_info:
                     if info["id"] == image_id:
                         filename, img_width, img_height = info["file_name"], info["width"], info["height"]
-                        print("filename : {}".format(filename))
-                        print("image width : {}".format(img_width))
-                        print("image height : {}".format(img_height))
 
-            '''
-            cls_idx = str(anno["category_id"])
-            #cls = str(self.cls_list[cls_idx])
+            cls = anno["category_id"]["cls_id"]
             box = [int(anno["bbox"][0]),int(anno["bbox"][1]), int(anno["bbox"][2]), int(anno["bbox"][3])]
 
             obj = {
                 "name": cls,
                 "box": box
             }
-            '''
+
+            print("filename : {}".format(filename))
+            print("image width : {}".format(img_width))
+            print("image height : {}".format(img_height))
+            print(obj)
+
 
             break
         #print(json_data["images"])
