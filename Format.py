@@ -22,7 +22,7 @@ from xml.etree.ElementTree import dump
                 
                     "objects" :
                                 {
-                                    "num_obj" : <string>
+                                    "num_obj" : <int>
                                     "<index>" :
                                                 {
                                                     "name" : <string>
@@ -165,7 +165,6 @@ class VocPascal:
             for key in xml_list:
                 xml = xml_list[key]
                 filepath = os.path.join(path, "".join([key, ".xml"]))
-                dump(xml)
                 ElementTree(xml).write(filepath)
 
             return True, None
@@ -264,31 +263,68 @@ class Coco:
 
         data = {}
 
+        cnt = 0
+
         for anno in json_data["annotations"]:
 
             image_id = anno["image_id"]
             cls_id = anno["category_id"]
-            print("image id : {}".format(image_id))
+
+            filename = None
+            img_width = None
+            img_height = None
 
             for info in images_info:
                     if info["id"] == image_id:
-                        filename, img_width, img_height = info["file_name"], info["width"], info["height"]
+                        filename, img_width, img_height = info["file_name"].split(".")[0], info["width"], info["height"]
 
-            cls = anno["category_id"]["cls_id"]
-            box = [int(anno["bbox"][0]),int(anno["bbox"][1]), int(anno["bbox"][2]), int(anno["bbox"][3])]
+            for category in cls_info:
+                if category["id"] == cls_id:
+                    cls = category["name"]
 
-            obj = {
-                "name": cls,
-                "box": box
+            size = {
+                "width": img_width,
+                "height": img_height,
+                "depth": "3"
             }
 
-            print("filename : {}".format(filename))
-            print("image width : {}".format(img_width))
-            print("image height : {}".format(img_height))
-            print(obj)
+            bndbox = {
+                "xmin": anno["bbox"][0],
+                "ymin": anno["bbox"][1],
+                "xmax": anno["bbox"][2],
+                "ymax": anno["bbox"][3]
+            }
+
+            obj_info = {
+                "name": cls,
+                "bndbox": bndbox
+            }
+
+            if filename in data:
+                obj_idx = str(int(data[filename]["objects"]["num_obj"])-1)
+                data[filename]["objects"][str(obj_idx)] = obj_info
+                data[filename]["objects"]["num_obj"] = int(data[filename]["objects"]["num_obj"]) + 1
+
+            else:
+
+                obj = {
+                    "num_obj": "1",
+                    "0": obj_info
+                }
+
+                data[filename] = {
+                    "size": size,
+                    "objects": obj
+                }
+
+            print(data)
+
+            if cnt >100:
+                break
+
+            cnt+=1
 
 
-            break
         #print(json_data["images"])
         #print(json_data["categories"])
 
