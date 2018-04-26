@@ -1,23 +1,25 @@
-
-from xml.etree.ElementTree import dump
-
-from Format import VocPascal
-
 import os
+from xml.etree.ElementTree import dump
+import json
+import pprint
+
+from Format import VOC
 
 
-voc = VocPascal()
+
+
+voc = VOC()
 
 path = "example/voc/label/"
 #000001.xml
 
 reaction, data = voc.parse(path)
 
-print(reaction, data)
-print()
-print()
-print()
-print()
+#print(reaction, data)
+#print()
+#print()
+#print()
+#print()
 
 
 
@@ -32,19 +34,24 @@ for xml in xml_list:
     print()
     print()
 '''
-print()
-print()
-print()
-print()
+#print()
+#print()
+#print()
+#print()
 
 reaction, msg =voc.save(xml_list, "result")
 
 #print(reaction, msg)
 
 
-from Format import Coco
+from Format import COCO
 
-coco = Coco()
+coco = COCO()
 
-coco.parse("/media/keti-1080ti/Martin/DataSet/COCO/annotations_trainval2014/annotations/instances_train2014.json")
+result, data = coco.parse("instances_val2017.json")
+
+#print(result)
+
+#pp = pprint.PrettyPrinter(indent=4)
+#pp.pprint(data)
 
