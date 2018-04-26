@@ -1,8 +1,10 @@
 import sys
 import os
+import csv
 
 import xml.etree.ElementTree as Et
 from xml.etree.ElementTree import Element, ElementTree
+from PIL import Image
 
 import json
 
@@ -28,10 +30,10 @@ from xml.etree.ElementTree import dump
                                                     "name" : <string>
                                                     "bndbox" :
                                                                 {
-                                                                    "xmin" : <string>
-                                                                    "ymin" : <string>
-                                                                    "xmax" : <string>
-                                                                    "ymax" : <string>
+                                                                    "xmin" : <float>
+                                                                    "ymin" : <float>
+                                                                    "xmax" : <float>
+                                                                    "ymax" : <float>
                                                                 }
                                                 }
                                     ...
@@ -289,7 +291,7 @@ class VOC:
 
 class COCO:
     """
-    Handler Class for VOC PASCAL Format
+    Handler Class for COCO Format
     """
 
     @staticmethod
@@ -302,7 +304,6 @@ class COCO:
             cls_info = json_data["categories"]
 
             data = {}
-            cnt = 0
 
             progress_length = len(json_data["annotations"])
             progress_cnt = 0
@@ -362,7 +363,6 @@ class COCO:
                         "objects": obj
                     }
 
-                cnt += 1
                 printProgressBar(progress_cnt + 1, progress_length, prefix='COCO Parsing:'.ljust(15), suffix='Complete', length=40)
                 progress_cnt += 1
 
@@ -377,3 +377,84 @@ class COCO:
             msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
 
             return False, msg
+
+class UDACITY:
+    """
+    Handler Class for COCO Format
+    """
+
+    @staticmethod
+    def parse(csv_path, img_path):
+
+        raw_f = open(csv_path, 'r', encoding='utf-8')
+        csv_f = csv.reader(raw_f)
+
+        progress_length = sum(1 for row in csv_f)
+        raw_f.seek(0)
+
+        progress_cnt = 0
+        printProgressBar(0, progress_length, prefix='\nUDACITY Parsing:'.ljust(15), suffix='Complete', length=40)
+
+        data = {}
+
+        for line in csv_f:
+
+
+            raw_line = line[0].split(" ")
+            raw_line_length = len(raw_line)
+
+            filename = raw_line[0].split(".")[0]
+            xmin = float(raw_line[1])
+            ymin = float(raw_line[2])
+            xmax = float(raw_line[3])
+            ymax = float(raw_line[4])
+            cls = raw_line[6].split('"')[1]
+
+            if raw_line_length is 8:
+                state = raw_line[7].split('"')[1]
+                cls = cls + state
+
+            img = Image.open(os.path.join(img_path, "".join([filename, ".jpg"])))
+            img_width = str(img.size[0])
+            img_height = str(img.size[1])
+            img_depth = 3
+
+            size = {
+                "width": img_width,
+                "height": img_height,
+                "depth": img_depth
+            }
+
+            bndbox = {
+                "xmin": xmin,
+                "ymin": ymin,
+                "xmax": xmax,
+                "ymax": ymax
+            }
+
+            obj_info = {
+                "name": cls,
+                "bndbox": bndbox
+            }
+
+            if filename in data:
+                obj_idx = str(int(data[filename]["objects"]["num_obj"]))
+                data[filename]["objects"][str(obj_idx)] = obj_info
+                data[filename]["objects"]["num_obj"] = int(obj_idx) + 1
+            elif filename not in data:
+                obj = {
+                    "num_obj": "1",
+                    "0": obj_info
+                }
+
+                data[filename] = {
+                    "size": size,
+                    "objects": obj
+                }
+
+            printProgressBar(progress_cnt + 1, progress_length, prefix='UDACITY Parsing:'.ljust(15), suffix='Complete',
+                             length=40)
+            progress_cnt += 1
+
+        return True, data
+

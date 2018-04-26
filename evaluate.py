@@ -7,12 +7,12 @@ from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
 import json
 
-from Format import VOC, COCO
+from Format import VOC, COCO, UDACITY
 
 parser = argparse.ArgumentParser(description='Evaluate label Converting.')
-parser.add_argument('--datasets', type=str, help='type of datasets', default='COCO')
-parser.add_argument('--img_path', type=str, help='directory of image folder', default='/media/keti-1080ti/keti_martin/Martin/DataSet/COCO/val2017/')
-parser.add_argument('--label_path', type=str, help='directory of label folder', default='instances_val2017.json')
+parser.add_argument('--datasets', type=str, help='type of datasets', default='UDACITY')
+parser.add_argument('--img_path', type=str, help='directory of image folder', default='/media/keti-1080ti/keti_martin/Martin/DataSet/Udacity/object detection/udacity/JPEG/')
+parser.add_argument('--label_path', type=str, help='directory of label folder', default='/media/keti-1080ti/keti_martin/Martin/DataSet/Udacity/object detection/udacity/label/labels.csv')
 parser.add_argument('--img_type', type=str, help='type of image', default='.jpg')
 
 
@@ -35,6 +35,10 @@ def main():
     elif datasets is "VOC":
         voc = VOC()
         result, data = voc.parse(label_path)
+    elif datasets is "UDACITY":
+        udacity = UDACITY()
+        result, data = udacity.parse(label_path, img_path)
+
 
     if result is True:
         for key in data:

@@ -3,11 +3,11 @@ from xml.etree.ElementTree import dump
 import json
 import pprint
 
-from Format import VOC
+from Format import VOC, COCO, UDACITY
 
 
 
-
+"""
 voc = VOC()
 
 path = "example/voc/label/"
@@ -54,4 +54,10 @@ result, data = coco.parse("instances_val2017.json")
 
 #pp = pprint.PrettyPrinter(indent=4)
 #pp.pprint(data)
+"""
 
+udacity = UDACITY()
+
+result, data = udacity.parse("/media/keti-1080ti/keti_martin/Martin/DataSet/Udacity/object detection/udacity/label/labels.csv", "/media/keti-1080ti/keti_martin/Martin/DataSet/Udacity/object detection/udacity/JPEG/")
+pp = pprint.PrettyPrinter(indent=4)
+pp.pprint(data)
