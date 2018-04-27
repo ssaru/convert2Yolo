@@ -3,7 +3,7 @@ from xml.etree.ElementTree import dump
 import json
 import pprint
 
-from Format import VOC, COCO, UDACITY
+from Format import VOC, COCO, UDACITY, KITTI, YOLO
 
 
 
@@ -54,10 +54,24 @@ result, data = coco.parse("instances_val2017.json")
 
 #pp = pprint.PrettyPrinter(indent=4)
 #pp.pprint(data)
-"""
+
 
 udacity = UDACITY()
 
 result, data = udacity.parse("/media/keti-1080ti/keti_martin/Martin/DataSet/Udacity/object detection/udacity/label/labels.csv", "/media/keti-1080ti/keti_martin/Martin/DataSet/Udacity/object detection/udacity/JPEG/")
 pp = pprint.PrettyPrinter(indent=4)
 pp.pprint(data)
+
+
+kitti = KITTI()
+
+result, data = kitti.parse("/media/martin/Martin/DataSet/KITTI/Object_Detection_2D/data_object_label_2/training/label_2/", "/media/martin/Martin/DataSet/KITTI/Object_Detection_2D/data_object_image_2/training/image_2/")
+
+print(data)
+"""
+coco = COCO()
+result, data = coco.parse("instances_val2017.json")
+
+yolo = YOLO("coco.names")
+result, data = yolo.generate(data)
+print(data)

@@ -380,7 +380,7 @@ class COCO:
 
 class UDACITY:
     """
-    Handler Class for COCO Format
+    Handler Class for UDACITY Format
     """
 
     @staticmethod
@@ -457,4 +457,174 @@ class UDACITY:
             progress_cnt += 1
 
         return True, data
+
+class KITTI:
+    """
+    Handler Class for UDACITY Format
+    """
+
+    @staticmethod
+    def parse(label_path, img_path, img_type=".png"):
+
+        (dir_path, dir_names, filenames) = next(os.walk(os.path.abspath(label_path)))
+
+        data = {}
+
+        progress_length = len(filenames)
+        progress_cnt = 0
+        printProgressBar(0, progress_length, prefix='\nKITTI Parsing:'.ljust(15), suffix='Complete', length=40)
+
+        for filename in filenames:
+
+            txt = open(os.path.join(dir_path, filename), "r")
+
+            filename = filename.split(".")[0]
+
+            img = Image.open(os.path.join(img_path, "".join([filename, img_type])))
+            img_width = str(img.size[0])
+            img_height = str(img.size[1])
+            img_depth = 3
+
+            size = {
+                "width": img_width,
+                "height": img_height,
+                "depth": img_depth
+            }
+
+            obj = {}
+            obj_cnt = 0
+
+            for line in txt:
+                elements = line.split(" ")
+                name = elements[0]
+                if name == "DontCare":
+                    continue
+
+                xmin = elements[4]
+                ymin = elements[5]
+                xmax = elements[6]
+                ymax = elements[7]
+
+                bndbox = {
+                    "xmin": float(xmin),
+                    "ymin": float(ymin),
+                    "xmax": float(xmax),
+                    "ymax": float(ymax)
+                }
+
+                obj_info = {
+                    "name": name,
+                    "bndbox": bndbox
+                }
+
+                obj[str(obj_cnt)] =obj_info
+                obj_cnt += 1
+
+            obj["num_obj"] =  obj_cnt
+
+            data[filename] = {
+                "size": size,
+                "objects": obj
+            }
+
+            printProgressBar(progress_cnt + 1, progress_length, prefix='KITTI Parsing:'.ljust(15), suffix='Complete',
+                             length=40)
+            progress_cnt += 1
+
+        return True, data
+
+class YOLO:
+    """
+    Handler Class for UDACITY Format
+    """
+
+    def __init__(self, cls_list_path):
+        with open(cls_list_path, 'r') as file:
+            l = file.read().splitlines()
+
+        self.cls_list = l
+
+
+    def coordinateCvt2YOLO(self,size, box):
+        dw = 1. / size[0]
+        dh = 1. / size[1]
+        x = (box[0] + box[1]) / 2.0
+        y = (box[2] + box[3]) / 2.0
+        w = box[1] - box[0]
+        h = box[3] - box[2]
+        x = x * dw
+        w = w * dw
+        y = y * dh
+        h = h * dh
+        return (round(x,3), round(y,3), round(w,3), round(h,3))
+
+    def generate(self, data):
+
+        for key in data:
+            img_width = data[key]["size"]["width"]
+            img_height = data[key]["size"]["height"]
+
+            contents = ""
+
+            for idx in range(0, int(data[key]["objects"]["num_obj"])):
+
+                xmin = data[key]["objects"][str(idx)]["bndbox"]["xmin"]
+                ymin = data[key]["objects"][str(idx)]["bndbox"]["ymin"]
+                xmax = data[key]["objects"][str(idx)]["bndbox"]["xmax"]
+                ymax = data[key]["objects"][str(idx)]["bndbox"]["ymax"]
+
+                b = (float(xmin), float(xmax), float(ymin), float(ymax))
+                bb = self.coordinateCvt2YOLO((img_width, img_height), b)
+                cls_id = self.cls_list.index(data[key]["objects"][str(idx)]["name"])
+
+                bndbox = "".join([str(e) for e in bb])
+                contents.join([cls_id, " ", bndbox, "\n"])
+
+            data = {
+                key: contents
+            }
+
+        return True, data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

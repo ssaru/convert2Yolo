@@ -7,13 +7,13 @@ from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
 import json
 
-from Format import VOC, COCO, UDACITY
+from Format import VOC, COCO, UDACITY, KITTI
 
 parser = argparse.ArgumentParser(description='Evaluate label Converting.')
-parser.add_argument('--datasets', type=str, help='type of datasets', default='UDACITY')
-parser.add_argument('--img_path', type=str, help='directory of image folder', default='/media/keti-1080ti/keti_martin/Martin/DataSet/Udacity/object detection/udacity/JPEG/')
-parser.add_argument('--label_path', type=str, help='directory of label folder', default='/media/keti-1080ti/keti_martin/Martin/DataSet/Udacity/object detection/udacity/label/labels.csv')
-parser.add_argument('--img_type', type=str, help='type of image', default='.jpg')
+parser.add_argument('--datasets', type=str, help='type of datasets', default='KITTI')
+parser.add_argument('--img_path', type=str, help='directory of image folder', default="/media/martin/Martin/DataSet/KITTI/Object_Detection_2D/data_object_image_2/training/image_2/")
+parser.add_argument('--label_path', type=str, help='directory of label folder', default="/media/martin/Martin/DataSet/KITTI/Object_Detection_2D/data_object_label_2/training/label_2/")
+parser.add_argument('--img_type', type=str, help='type of image', default='.png')
 
 
 args = parser.parse_args()
@@ -38,6 +38,10 @@ def main():
     elif datasets is "UDACITY":
         udacity = UDACITY()
         result, data = udacity.parse(label_path, img_path)
+    elif datasets is "KITTI":
+        kitti = KITTI()
+        result, data = kitti.parse(label_path, img_path)
+
 
 
     if result is True:
