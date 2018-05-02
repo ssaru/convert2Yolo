@@ -14,7 +14,7 @@ Support DataSet :
 pip3 install -r requirements.txt
 ```
 
-#### 1. Required Parameters 
+### Required Parameters 
 
 each dataset requried some parameters
 
@@ -28,7 +28,7 @@ see example.py
   6. manipast file path
   7. class list file path(*.names)
   
-##### *.names file example
+### *.names file example
 ```
 aeroplane
 bicycle
@@ -52,7 +52,7 @@ train
 tvmonitor
 ```
 
-#### 1. example Code
+### 1. example Code
 ```
 python3 example.py --datasets [COCO/VOC/KITTI/UDACITY] --image_path <image_path> --label <label path or annotation file> --convert_output_path <output path> --image_type [".jpg" / ".png"] --manipast_path <output manipast file path> --clas_list_file <*.names file path>
 ```
