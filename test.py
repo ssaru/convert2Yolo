@@ -73,5 +73,6 @@ coco = COCO()
 result, data = coco.parse("instances_val2017.json")
 
 yolo = YOLO("coco.names")
-result, data = yolo.generate(data)
-print(data)
+yolo.generate(data)
+#result, data =
+#print(data)

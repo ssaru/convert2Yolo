@@ -560,32 +560,60 @@ class YOLO:
 
     def generate(self, data):
 
-        for key in data:
-            img_width = data[key]["size"]["width"]
-            img_height = data[key]["size"]["height"]
+        print(data)
 
-            contents = ""
+        try:
+            for key in data:
+                print(data[key])
 
-            for idx in range(0, int(data[key]["objects"]["num_obj"])):
+                img_width = data[key]["size"]["width"]
+                img_height = data[key]["size"]["height"]
 
-                xmin = data[key]["objects"][str(idx)]["bndbox"]["xmin"]
-                ymin = data[key]["objects"][str(idx)]["bndbox"]["ymin"]
-                xmax = data[key]["objects"][str(idx)]["bndbox"]["xmax"]
-                ymax = data[key]["objects"][str(idx)]["bndbox"]["ymax"]
+                contents = ""
 
-                b = (float(xmin), float(xmax), float(ymin), float(ymax))
-                bb = self.coordinateCvt2YOLO((img_width, img_height), b)
-                cls_id = self.cls_list.index(data[key]["objects"][str(idx)]["name"])
 
-                bndbox = "".join([str(e) for e in bb])
-                contents.join([cls_id, " ", bndbox, "\n"])
+                print(key)
+                print(img_width)
+                print(img_height)
+                print()
 
-            data = {
-                key: contents
-            }
 
-        return True, data
+                for idx in range(0, int(data[key]["objects"]["num_obj"])):
 
+                    xmin = data[key]["objects"][str(idx)]["bndbox"]["xmin"]
+                    ymin = data[key]["objects"][str(idx)]["bndbox"]["ymin"]
+                    xmax = data[key]["objects"][str(idx)]["bndbox"]["xmax"]
+                    ymax = data[key]["objects"][str(idx)]["bndbox"]["ymax"]
+
+                    b = (float(xmin), float(xmax), float(ymin), float(ymax))
+                    bb = self.coordinateCvt2YOLO((img_width, img_height), b)
+                    cls_id = self.cls_list.index(data[key]["objects"][str(idx)]["name"])
+
+                    bndbox = "".join([str(e) for e in bb])
+                    print(bndbox)
+                    print(type(bndbox[0]))
+                    print(type(cls_id))
+                    contents = "".join([contents, str(cls_id), " ", bndbox, "\n"])
+                    print(contents)
+
+                data = {
+                    key: contents
+                }
+
+            #return True, data
+
+        except Exception as e:
+
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+
+            print(msg)
+            print(key)
+            print(data[key])
+
+            #return False, msg
 
 
 
