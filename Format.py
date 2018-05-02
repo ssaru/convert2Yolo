@@ -386,77 +386,88 @@ class UDACITY:
     @staticmethod
     def parse(csv_path, img_path):
 
-        raw_f = open(csv_path, 'r', encoding='utf-8')
-        csv_f = csv.reader(raw_f)
+        try:
 
-        progress_length = sum(1 for row in csv_f)
-        raw_f.seek(0)
+            raw_f = open(csv_path, 'r', encoding='utf-8')
+            csv_f = csv.reader(raw_f)
 
-        progress_cnt = 0
-        printProgressBar(0, progress_length, prefix='\nUDACITY Parsing:'.ljust(15), suffix='Complete', length=40)
+            progress_length = sum(1 for row in csv_f)
+            raw_f.seek(0)
 
-        data = {}
+            progress_cnt = 0
+            printProgressBar(0, progress_length, prefix='\nUDACITY Parsing:'.ljust(15), suffix='Complete', length=40)
 
-        for line in csv_f:
+            data = {}
+
+            for line in csv_f:
 
 
-            raw_line = line[0].split(" ")
-            raw_line_length = len(raw_line)
+                raw_line = line[0].split(" ")
+                raw_line_length = len(raw_line)
 
-            filename = raw_line[0].split(".")[0]
-            xmin = float(raw_line[1])
-            ymin = float(raw_line[2])
-            xmax = float(raw_line[3])
-            ymax = float(raw_line[4])
-            cls = raw_line[6].split('"')[1]
+                filename = raw_line[0].split(".")[0]
+                xmin = float(raw_line[1])
+                ymin = float(raw_line[2])
+                xmax = float(raw_line[3])
+                ymax = float(raw_line[4])
+                cls = raw_line[6].split('"')[1]
 
-            if raw_line_length is 8:
-                state = raw_line[7].split('"')[1]
-                cls = cls + state
+                if raw_line_length is 8:
+                    state = raw_line[7].split('"')[1]
+                    cls = cls + state
 
-            img = Image.open(os.path.join(img_path, "".join([filename, ".jpg"])))
-            img_width = str(img.size[0])
-            img_height = str(img.size[1])
-            img_depth = 3
+                img = Image.open(os.path.join(img_path, "".join([filename, ".jpg"])))
+                img_width = str(img.size[0])
+                img_height = str(img.size[1])
+                img_depth = 3
 
-            size = {
-                "width": img_width,
-                "height": img_height,
-                "depth": img_depth
-            }
-
-            bndbox = {
-                "xmin": xmin,
-                "ymin": ymin,
-                "xmax": xmax,
-                "ymax": ymax
-            }
-
-            obj_info = {
-                "name": cls,
-                "bndbox": bndbox
-            }
-
-            if filename in data:
-                obj_idx = str(int(data[filename]["objects"]["num_obj"]))
-                data[filename]["objects"][str(obj_idx)] = obj_info
-                data[filename]["objects"]["num_obj"] = int(obj_idx) + 1
-            elif filename not in data:
-                obj = {
-                    "num_obj": "1",
-                    "0": obj_info
+                size = {
+                    "width": img_width,
+                    "height": img_height,
+                    "depth": img_depth
                 }
 
-                data[filename] = {
-                    "size": size,
-                    "objects": obj
+                bndbox = {
+                    "xmin": xmin,
+                    "ymin": ymin,
+                    "xmax": xmax,
+                    "ymax": ymax
                 }
 
-            printProgressBar(progress_cnt + 1, progress_length, prefix='UDACITY Parsing:'.ljust(15), suffix='Complete',
-                             length=40)
-            progress_cnt += 1
+                obj_info = {
+                    "name": cls,
+                    "bndbox": bndbox
+                }
 
-        return True, data
+                if filename in data:
+                    obj_idx = str(int(data[filename]["objects"]["num_obj"]))
+                    data[filename]["objects"][str(obj_idx)] = obj_info
+                    data[filename]["objects"]["num_obj"] = int(obj_idx) + 1
+                elif filename not in data:
+                    obj = {
+                        "num_obj": "1",
+                        "0": obj_info
+                    }
+
+                    data[filename] = {
+                        "size": size,
+                        "objects": obj
+                    }
+
+                printProgressBar(progress_cnt + 1, progress_length, prefix='UDACITY Parsing:'.ljust(15), suffix='Complete',
+                                 length=40)
+                progress_cnt += 1
+
+            return True, data
+
+        except Exception as e:
+
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+
+            return False, msg
 
 class KITTI:
     """
@@ -466,72 +477,83 @@ class KITTI:
     @staticmethod
     def parse(label_path, img_path, img_type=".png"):
 
-        (dir_path, dir_names, filenames) = next(os.walk(os.path.abspath(label_path)))
+        try:
 
-        data = {}
+            (dir_path, dir_names, filenames) = next(os.walk(os.path.abspath(label_path)))
 
-        progress_length = len(filenames)
-        progress_cnt = 0
-        printProgressBar(0, progress_length, prefix='\nKITTI Parsing:'.ljust(15), suffix='Complete', length=40)
+            data = {}
 
-        for filename in filenames:
+            progress_length = len(filenames)
+            progress_cnt = 0
+            printProgressBar(0, progress_length, prefix='\nKITTI Parsing:'.ljust(15), suffix='Complete', length=40)
 
-            txt = open(os.path.join(dir_path, filename), "r")
+            for filename in filenames:
 
-            filename = filename.split(".")[0]
+                txt = open(os.path.join(dir_path, filename), "r")
 
-            img = Image.open(os.path.join(img_path, "".join([filename, img_type])))
-            img_width = str(img.size[0])
-            img_height = str(img.size[1])
-            img_depth = 3
+                filename = filename.split(".")[0]
 
-            size = {
-                "width": img_width,
-                "height": img_height,
-                "depth": img_depth
-            }
+                img = Image.open(os.path.join(img_path, "".join([filename, img_type])))
+                img_width = str(img.size[0])
+                img_height = str(img.size[1])
+                img_depth = 3
 
-            obj = {}
-            obj_cnt = 0
-
-            for line in txt:
-                elements = line.split(" ")
-                name = elements[0]
-                if name == "DontCare":
-                    continue
-
-                xmin = elements[4]
-                ymin = elements[5]
-                xmax = elements[6]
-                ymax = elements[7]
-
-                bndbox = {
-                    "xmin": float(xmin),
-                    "ymin": float(ymin),
-                    "xmax": float(xmax),
-                    "ymax": float(ymax)
+                size = {
+                    "width": img_width,
+                    "height": img_height,
+                    "depth": img_depth
                 }
 
-                obj_info = {
-                    "name": name,
-                    "bndbox": bndbox
+                obj = {}
+                obj_cnt = 0
+
+                for line in txt:
+                    elements = line.split(" ")
+                    name = elements[0]
+                    if name == "DontCare":
+                        continue
+
+                    xmin = elements[4]
+                    ymin = elements[5]
+                    xmax = elements[6]
+                    ymax = elements[7]
+
+                    bndbox = {
+                        "xmin": float(xmin),
+                        "ymin": float(ymin),
+                        "xmax": float(xmax),
+                        "ymax": float(ymax)
+                    }
+
+                    obj_info = {
+                        "name": name,
+                        "bndbox": bndbox
+                    }
+
+                    obj[str(obj_cnt)] =obj_info
+                    obj_cnt += 1
+
+                obj["num_obj"] =  obj_cnt
+
+                data[filename] = {
+                    "size": size,
+                    "objects": obj
                 }
 
-                obj[str(obj_cnt)] =obj_info
-                obj_cnt += 1
+                printProgressBar(progress_cnt + 1, progress_length, prefix='KITTI Parsing:'.ljust(15), suffix='Complete',
+                                 length=40)
+                progress_cnt += 1
 
-            obj["num_obj"] =  obj_cnt
+            return True, data
 
-            data[filename] = {
-                "size": size,
-                "objects": obj
-            }
+        except Exception as e:
 
-            printProgressBar(progress_cnt + 1, progress_length, prefix='KITTI Parsing:'.ljust(15), suffix='Complete',
-                             length=40)
-            progress_cnt += 1
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
-        return True, data
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+
+            return False, msg
 
 class YOLO:
     """
@@ -560,23 +582,19 @@ class YOLO:
 
     def generate(self, data):
 
-        print(data)
-
         try:
-            for key in data:
-                print(data[key])
 
-                img_width = data[key]["size"]["width"]
-                img_height = data[key]["size"]["height"]
+            progress_length =len(data)
+            progress_cnt = 0
+            printProgressBar(0, progress_length, prefix='\nYOLO Generating:'.ljust(15), suffix='Complete', length=40)
+
+            result = {}
+
+            for key in data:
+                img_width = int(data[key]["size"]["width"])
+                img_height = int(data[key]["size"]["height"])
 
                 contents = ""
-
-
-                print(key)
-                print(img_width)
-                print(img_height)
-                print()
-
 
                 for idx in range(0, int(data[key]["objects"]["num_obj"])):
 
@@ -590,17 +608,16 @@ class YOLO:
                     cls_id = self.cls_list.index(data[key]["objects"][str(idx)]["name"])
 
                     bndbox = "".join([str(e) for e in bb])
-                    print(bndbox)
-                    print(type(bndbox[0]))
-                    print(type(cls_id))
                     contents = "".join([contents, str(cls_id), " ", bndbox, "\n"])
-                    print(contents)
 
-                data = {
-                    key: contents
-                }
+                result[key] = contents
 
-            #return True, data
+                printProgressBar(progress_cnt + 1, progress_length, prefix='YOLO Generating:'.ljust(15),
+                                 suffix='Complete',
+                                 length=40)
+                progress_cnt += 1
+
+            return True, result
 
         except Exception as e:
 
@@ -609,11 +626,40 @@ class YOLO:
 
             msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
 
-            print(msg)
-            print(key)
-            print(data[key])
+            return False, msg
 
-            #return False, msg
+    def save(self, data, save_path, img_path, img_type, manipast_path):
+
+        try:
+
+            progress_length = len(data)
+            progress_cnt = 0
+            printProgressBar(0, progress_length, prefix='\nYOLO Saving:'.ljust(15), suffix='Complete', length=40)
+
+            with open(os.path.abspath(os.path.join(manipast_path, "manifast.txt")), "w") as manipast_file:
+
+                for key in data:
+                    manipast_file.write(os.path.abspath(os.path.join(img_path, "".join([key, img_type, "\n"]))))
+
+                    with open(os.path.abspath(os.path.join(save_path, "".join([key, ".txt"]))), "w") as output_txt_file:
+                        output_txt_file.write(data[key])
+
+
+                    printProgressBar(progress_cnt + 1, progress_length, prefix='YOLO Saving:'.ljust(15),
+                                     suffix='Complete',
+                                     length=40)
+                    progress_cnt += 1
+
+            return True, None
+
+        except Exception as e:
+
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+
+            return False, msg
 
 
 
