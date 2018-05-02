@@ -10,10 +10,10 @@ import json
 from Format import VOC, COCO, UDACITY, KITTI
 
 parser = argparse.ArgumentParser(description='Evaluate label Converting.')
-parser.add_argument('--datasets', type=str, help='type of datasets', default='KITTI')
-parser.add_argument('--img_path', type=str, help='directory of image folder', default="/media/martin/Martin/DataSet/KITTI/Object_Detection_2D/data_object_image_2/training/image_2/")
-parser.add_argument('--label_path', type=str, help='directory of label folder', default="/media/martin/Martin/DataSet/KITTI/Object_Detection_2D/data_object_label_2/training/label_2/")
-parser.add_argument('--img_type', type=str, help='type of image', default='.png')
+parser.add_argument('--datasets', type=str, help='type of datasets')
+parser.add_argument('--img_path', type=str, help='directory of image folder')
+parser.add_argument('--label_path', type=str, help='directory of label folder')
+parser.add_argument('--img_type', type=str, help='type of image', default='.jpg')
 
 
 args = parser.parse_args()
@@ -29,16 +29,16 @@ def main():
     result = None
     data = None
 
-    if datasets is "COCO":
+    if datasets == "COCO":
         coco = COCO()
         result, data = coco.parse(label_path)
-    elif datasets is "VOC":
+    elif datasets == "VOC":
         voc = VOC()
         result, data = voc.parse(label_path)
-    elif datasets is "UDACITY":
+    elif datasets == "UDACITY":
         udacity = UDACITY()
         result, data = udacity.parse(label_path, img_path)
-    elif datasets is "KITTI":
+    elif datasets == "KITTI":
         kitti = KITTI()
         result, data = kitti.parse(label_path, img_path)
 
@@ -73,7 +73,7 @@ def main():
             im.close()
 
     else:
-        print("return value : {}, msg : {}".format(result, data))
+        print("return value : {}, msg : {}, args: {}".format(result, data, args))
 
 if __name__ == '__main__':
     main()
