@@ -607,8 +607,8 @@ class YOLO:
                     bb = self.coordinateCvt2YOLO((img_width, img_height), b)
                     cls_id = self.cls_list.index(data[key]["objects"][str(idx)]["name"])
 
-                    bndbox = "".join([str(e) for e in bb])
-                    contents = "".join([contents, str(cls_id), " ", bndbox, "\n"])
+                    bndbox = "".join(["".join([str(e), " "]) for e in bb])
+                    contents = "".join([contents, str(cls_id), " ", bndbox[:-1], "\n"])
 
                 result[key] = contents
 
