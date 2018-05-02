@@ -1,32 +1,34 @@
 # Convert2Yolo
-Object Detection & Recognition DataSet annotation Convert [Yolo Darknet](https://pjreddie.com/darknet/yolo/)
+Object Detection annotation Convert to [Yolo Darknet](https://pjreddie.com/darknet/yolo/) Format
+
+Support DataSet : 
+
+1. COCO
+2. VOC
+3. UDACITY Object Detection
+4. KITTI 2D Object Detection
 
 ### Pre-Requiredment
-#### 1. Make Directory
-All convert code need some directory hierarchy
-
-just make folder like this
 
 ```
-
-[some your project root directory]
-|
-| - [JPEG] : For images folder
-|
-| - [label] : For annotaion folder
-|
-| - [results] : For results of convert2Yolo
-
+pip3 install -r requirements.txt
 ```
 
-#### 2. Make Classe file
-you should make class file
+#### 1. Required Parameters 
 
-follow this format
+each dataset requried some parameters
 
-reference voc.names file in repository
+see example.py
 
-##### voc.names
+  1. Dataset Category
+  2. Image path
+  3. annotation path
+  4. output path
+  5. image type
+  6. manipast file path
+  7. class list file path(*.names)
+  
+##### *.names file example
 ```
 aeroplane
 bicycle
@@ -50,11 +52,6 @@ train
 tvmonitor
 ```
 
-#### 3. Install requirement package
-```
-pip3 install -r pip_install_required.txt
-```
-
 ### VOC Pascal Format
 Here is VOC Pascal DataSet example
 
@@ -63,12 +60,13 @@ Here is VOC Pascal DataSet example
 
 #### 1. example Code
 ```
-python voc.py test.names example/voc/JPEG/ example/voc/label/ example/voc/results/
+python3 example.py --datasets [COCO/VOC/KITTI/UDACITY] --image_path <image_path> --label <label path or annotation file> --convert_output_path <output path> --image_type [".jpg" / ".png"] --manipast_path <output manipast file path> --clas_list_file <*.names file path>
 ```
 
 ### TODO
 - [x] Support VOC Pascal Format
 - [x] Support Udacity Format
-- [x] Write how to using VOC Pascal Format in ReadMe
-- [ ] Write how to using Udacity Format in ReadMe
-- [ ] Code Refactoring
+- [x] Support COCO Format
+- [x] Support KITTI Format
+- [x] Write README
+- [x] Code Refactoring
