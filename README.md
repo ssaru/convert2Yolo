@@ -52,12 +52,6 @@ train
 tvmonitor
 ```
 
-### VOC Pascal Format
-Here is VOC Pascal DataSet example
-
-![voc image](image/voc_image.png)
-![voc xml](image/voc_xml.png)
-
 #### 1. example Code
 ```
 python3 example.py --datasets [COCO/VOC/KITTI/UDACITY] --image_path <image_path> --label <label path or annotation file> --convert_output_path <output path> --image_type [".jpg" / ".png"] --manipast_path <output manipast file path> --clas_list_file <*.names file path>
