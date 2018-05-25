@@ -478,73 +478,75 @@ class KITTI:
     def parse(label_path, img_path, img_type=".png"):
 
         try:
+            with open("box_groups.txt", "w") as bboxGroups:
+                (dir_path, dir_names, filenames) = next(os.walk(os.path.abspath(label_path)))
 
-            (dir_path, dir_names, filenames) = next(os.walk(os.path.abspath(label_path)))
+                data = {}
 
-            data = {}
+                progress_length = len(filenames)
+                progress_cnt = 0
+                printProgressBar(0, progress_length, prefix='\nKITTI Parsing:'.ljust(15), suffix='Complete', length=40)
 
-            progress_length = len(filenames)
-            progress_cnt = 0
-            printProgressBar(0, progress_length, prefix='\nKITTI Parsing:'.ljust(15), suffix='Complete', length=40)
+                for filename in filenames:
 
-            for filename in filenames:
+                    txt = open(os.path.join(dir_path, filename), "r")
 
-                txt = open(os.path.join(dir_path, filename), "r")
+                    filename = filename.split(".")[0]
 
-                filename = filename.split(".")[0]
+                    img = Image.open(os.path.join(img_path, "".join([filename, img_type])))
+                    img_width = str(img.size[0])
+                    img_height = str(img.size[1])
+                    img_depth = 3
 
-                img = Image.open(os.path.join(img_path, "".join([filename, img_type])))
-                img_width = str(img.size[0])
-                img_height = str(img.size[1])
-                img_depth = 3
-
-                size = {
-                    "width": img_width,
-                    "height": img_height,
-                    "depth": img_depth
-                }
-
-                obj = {}
-                obj_cnt = 0
-
-                for line in txt:
-                    elements = line.split(" ")
-                    name = elements[0]
-                    if name == "DontCare":
-                        continue
-
-                    xmin = elements[4]
-                    ymin = elements[5]
-                    xmax = elements[6]
-                    ymax = elements[7]
-
-                    bndbox = {
-                        "xmin": float(xmin),
-                        "ymin": float(ymin),
-                        "xmax": float(xmax),
-                        "ymax": float(ymax)
+                    size = {
+                        "width": img_width,
+                        "height": img_height,
+                        "depth": img_depth
                     }
 
-                    obj_info = {
-                        "name": name,
-                        "bndbox": bndbox
+                    obj = {}
+                    obj_cnt = 0
+
+                    for line in txt:
+                        elements = line.split(" ")
+                        name = elements[0]
+                        if name == "DontCare":
+                            continue
+
+                        xmin = elements[4]
+                        ymin = elements[5]
+                        xmax = elements[6]
+                        ymax = elements[7]
+
+                        bndbox = {
+                            "xmin": float(xmin),
+                            "ymin": float(ymin),
+                            "xmax": float(xmax),
+                            "ymax": float(ymax)
+                        }
+
+                        bboxGroups.write("{} {} {} {}\n".format(float(xmin), float(ymin), float(xmax)-float(xmin), float(ymax)-float(ymin)))
+
+                        obj_info = {
+                            "name": name,
+                            "bndbox": bndbox
+                        }
+
+                        obj[str(obj_cnt)] =obj_info
+                        obj_cnt += 1
+
+                    obj["num_obj"] =  obj_cnt
+
+                    data[filename] = {
+                        "size": size,
+                        "objects": obj
                     }
 
-                    obj[str(obj_cnt)] =obj_info
-                    obj_cnt += 1
+                    printProgressBar(progress_cnt + 1, progress_length, prefix='KITTI Parsing:'.ljust(15), suffix='Complete',
+                                     length=40)
+                    progress_cnt += 1
 
-                obj["num_obj"] =  obj_cnt
-
-                data[filename] = {
-                    "size": size,
-                    "objects": obj
-                }
-
-                printProgressBar(progress_cnt + 1, progress_length, prefix='KITTI Parsing:'.ljust(15), suffix='Complete',
-                                 length=40)
-                progress_cnt += 1
-
-            return True, data
+                return True, data
 
         except Exception as e:
 
@@ -570,15 +572,106 @@ class YOLO:
     def coordinateCvt2YOLO(self,size, box):
         dw = 1. / size[0]
         dh = 1. / size[1]
+
+        # (xmin + xmax / 2)
         x = (box[0] + box[1]) / 2.0
+        # (ymin + ymax / 2)
         y = (box[2] + box[3]) / 2.0
+
+        # (xmax - xmin) = w
         w = box[1] - box[0]
+        # (ymax - ymin) = h
         h = box[3] - box[2]
+
         x = x * dw
         w = w * dw
         y = y * dh
         h = h * dh
         return (round(x,3), round(y,3), round(w,3), round(h,3))
+
+    def parse(self, label_path, img_path, img_type=".png"):
+        try:
+
+            (dir_path, dir_names, filenames) = next(os.walk(os.path.abspath(label_path)))
+
+            data = {}
+
+            progress_length = len(filenames)
+            progress_cnt = 0
+            printProgressBar(0, progress_length, prefix='\nYOLO Parsing:'.ljust(15), suffix='Complete', length=40)
+
+            for filename in filenames:
+
+                txt = open(os.path.join(dir_path, filename), "r")
+
+                filename = filename.split(".")[0]
+
+                img = Image.open(os.path.join(img_path, "".join([filename, img_type])))
+                img_width = str(img.size[0])
+                img_height = str(img.size[1])
+                img_depth = 3
+
+                size = {
+                    "width": img_width,
+                    "height": img_height,
+                    "depth": img_depth
+                }
+
+                obj = {}
+                obj_cnt = 0
+
+                for line in txt:
+                    elements = line.split(" ")
+                    name_id = elements[0]
+
+                    xminAddxmax = float(elements[1]) * (2.0 * float(img_width))
+                    yminAddymax = float(elements[2]) * (2.0 * float(img_height))
+
+                    w = float(elements[3]) * float(img_width)
+                    h = float(elements[4]) * float(img_height)
+
+                    xmin = (xminAddxmax - w) / 2
+                    ymin = (yminAddymax - h) / 2
+                    xmax = xmin + w
+                    ymax = ymin + h
+
+                    bndbox = {
+                        "xmin": float(xmin),
+                        "ymin": float(ymin),
+                        "xmax": float(xmax),
+                        "ymax": float(ymax)
+                    }
+
+
+                    obj_info = {
+                        "name": name_id,
+                        "bndbox": bndbox
+                    }
+
+                    obj[str(obj_cnt)] =obj_info
+                    obj_cnt += 1
+
+                obj["num_obj"] =  obj_cnt
+
+                data[filename] = {
+                    "size": size,
+                    "objects": obj
+                }
+
+                printProgressBar(progress_cnt + 1, progress_length, prefix='YOLO Parsing:'.ljust(15), suffix='Complete',
+                                 length=40)
+                progress_cnt += 1
+
+            return True, data
+
+        except Exception as e:
+
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+
+            return False, msg
 
     def generate(self, data):
 
@@ -605,6 +698,7 @@ class YOLO:
 
                     b = (float(xmin), float(xmax), float(ymin), float(ymax))
                     bb = self.coordinateCvt2YOLO((img_width, img_height), b)
+
                     cls_id = self.cls_list.index(data[key]["objects"][str(idx)]["name"])
 
                     bndbox = "".join(["".join([str(e), " "]) for e in bb])

@@ -7,13 +7,14 @@ from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
 import json
 
-from Format import VOC, COCO, UDACITY, KITTI
+from Format import VOC, COCO, UDACITY, KITTI, YOLO
 
 parser = argparse.ArgumentParser(description='Evaluate label Converting.')
 parser.add_argument('--datasets', type=str, help='type of datasets')
 parser.add_argument('--img_path', type=str, help='directory of image folder')
 parser.add_argument('--label_path', type=str, help='directory of label folder')
 parser.add_argument('--img_type', type=str, help='type of image', default='.jpg')
+parser.add_argument('--cls_list_file', type=str, help='directory of *.names file', default="./")
 
 
 args = parser.parse_args()
@@ -25,6 +26,7 @@ def main():
     label_path = args.label_path
     img_type = args.img_type
     datasets = args.datasets
+    cls_list = args.cls_list_file
 
     result = None
     data = None
@@ -40,14 +42,16 @@ def main():
         result, data = udacity.parse(label_path, img_path)
     elif datasets == "KITTI":
         kitti = KITTI()
-        result, data = kitti.parse(label_path, img_path)
-
-
+        result, data = kitti.parse(label_path, img_path, img_type=img_type)
+    elif datasets == "YOLO":
+        yolo =YOLO(os.path.abspath(cls_list))
+        result, data = yolo.parse(label_path, img_path, img_type=img_type)
 
     if result is True:
         for key in data:
 
             filepath = "".join([img_path, key, img_type])
+
             im = Image.open(filepath)
 
             draw = ImageDraw.Draw(im)

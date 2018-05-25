@@ -46,7 +46,7 @@ def main(config):
             print("VOC Parsing Result : {}, msg : {}".format(flag, data))
 
 
-    elif config["dataasets"] == "COCO":
+    elif config["datasets"] == "COCO":
         coco = COCO()
         yolo = YOLO(os.path.abspath(config["cls_list"]))
 
@@ -68,7 +68,7 @@ def main(config):
         else:
             print("COCO Parsing Result : {}, msg : {}".format(flag, data))
 
-    elif config["dataasets"] == "UDACITY":
+    elif config["datasets"] == "UDACITY":
         udacity = UDACITY()
         yolo = YOLO(os.path.abspath(config["cls_list"]))
 
@@ -90,11 +90,11 @@ def main(config):
         else:
             print("COCO Parsing Result : {}, msg : {}".format(flag, data))
 
-    elif config["dataasets"] == "KITTI":
+    elif config["datasets"] == "KITTI":
         kitti = KITTI()
         yolo = YOLO(os.path.abspath(config["cls_list"]))
 
-        flag, data = kitti.parse(config["label"])
+        flag, data = kitti.parse(config["label"], config["img_path"], img_type=config["img_type"])
 
         if flag == True:
             flag, data = yolo.generate(data)
