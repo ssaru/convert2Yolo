@@ -54,7 +54,7 @@ tvmonitor
 
 ### 1. example Code
 ```
-python3 example.py --datasets [COCO/VOC/KITTI/UDACITY] --image_path <image_path> --label <label path or annotation file> --convert_output_path <output path> --image_type [".jpg" / ".png"] --manipast_path <output manipast file path> --clas_list_file <*.names file path>
+python3 example.py --datasets [COCO/VOC/KITTI/UDACITY] --img_path <image_path> --label <label path or annotation file> --convert_output_path <output path> --img_type [".jpg" / ".png"] --manipast_path <output manipast file path> --cls_list_file <*.names file path>
 ```
 
 ### TODO
