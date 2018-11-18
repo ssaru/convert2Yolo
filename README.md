@@ -22,22 +22,64 @@ pip3 install -r requirements.txt
 
 each dataset requried some parameters
 
-see example.py
+see [example.py](https://github.com/ssaru/convert2Yolo/blob/master/example.py)
 
-    1. Dataset Category
-       - like a COCO / VOC / UDACITY / KITTI
-    2. Image path
-       - it directory path. not file path
-    3. annotation path
-       - it directory path. not file path
-    4. output path
-       - it directory path. not file path
-    5. image type
-       - like a `*.png`, `*.jpg`
-    6. manipast file path
-       - it need train yolo model in [darknet framework](https://pjreddie.com/darknet/)
-    7. class list file path(*.names)
-       - it is `*.txt` file contain class name. reference [darknet `*.name` file](https://github.com/pjreddie/darknet/blob/master/data/voc.names)
+1. --datasets
+   - like a COCO / VOC / UDACITY / KITTI
+
+     ```bash
+     --datasets COCO
+     ```
+2. --img_path
+   - it directory path. not file path
+
+     ```bash
+     --img_path ./example/kitti/images/
+     ```
+3. --label
+   - it directory path. not file path
+
+     (some datasets give label `*.json` or `*.csv` . this case use file path)
+
+     ```bash
+     --label ./example/kitti/labels/
+     ```
+
+     OR
+
+     ```bash
+     --label ./example/kitti/labels/label.json
+     
+     or
+     
+     --label ./example/kitti/labels/label.csv
+     ```
+
+     
+4. --convert_output_path
+   - it directory path. not file path
+
+     ```bash
+     --convert_output_path ./
+     ```
+5. --img_type
+   - like a `*.png`, `*.jpg`
+
+     ```bash
+     --img_type ".jpg"
+     ```
+6. --manipast_path
+   - it need train yolo model in [darknet framework](https://pjreddie.com/darknet/)
+
+     ```bash
+     --manipast_path ./
+     ```
+7. --cla_list_file(`*.names`)
+   - it is `*.names` file contain class name. refer [darknet `*.name` file](https://github.com/pjreddie/darknet/blob/master/data/voc.names)
+
+     ```bash
+     --cls_list_file voc.names
+     ```
 
 ​    
 
