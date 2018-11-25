@@ -1,3 +1,5 @@
+#-*-coding:utf-8-*-
+
 import os
 from xml.etree.ElementTree import dump
 import json
