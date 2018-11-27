@@ -434,6 +434,12 @@ scissors
 teddy bear
 hair drier
 toothbrush
+motorcycle
+potted plant
+dining table
+tv
+couch
+airplane
 ```
 
 ​    
