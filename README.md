@@ -26,18 +26,23 @@ each dataset requried some parameters
 see [example.py](https://github.com/ssaru/convert2Yolo/blob/master/example.py)
 
 1. --datasets
+
    - like a COCO / VOC / UDACITY / KITTI
 
      ```bash
      --datasets COCO
      ```
+
 2. --img_path
+
    - it directory path. not file path
 
      ```bash
      --img_path ./example/kitti/images/
      ```
+
 3. --label
+
    - it directory path. not file path
 
      (some datasets give label `*.json` or `*.csv` . this case use file path)
@@ -57,24 +62,31 @@ see [example.py](https://github.com/ssaru/convert2Yolo/blob/master/example.py)
      ```
 
 4. --convert_output_path
+
    - it directory path. not file path
 
      ```bash
      --convert_output_path ./
      ```
+
 5. --img_type
+
    - like a `*.png`, `*.jpg`
 
      ```bash
      --img_type ".jpg"
      ```
+
 6. --manipast_path
+
    - it need train yolo model in [darknet framework](https://pjreddie.com/darknet/)
 
      ```bash
      --manipast_path ./
      ```
+
 7. --cla_list_file(`*.names`)
+
    - it is `*.names` file contain class name. refer [darknet `*.name` file](https://github.com/pjreddie/darknet/blob/master/data/voc.names)
 
      ```bash
@@ -84,6 +96,7 @@ see [example.py](https://github.com/ssaru/convert2Yolo/blob/master/example.py)
 ​    
 
 ### *.names file example
+
 ```
 aeroplane
 bicycle
@@ -251,7 +264,7 @@ YOLO Saving:   |█████████████████████�
 
 ​    
 
-#### Result    
+#### Result
 
 now check result files (`~/YOLO/`, `./manifast.txt`)
 
@@ -302,8 +315,6 @@ $ cat ./manifast.txt
 ~/VOC/VOCdevkit/VOC2012/JPEGImages/2012_000212.jpg
 ```
 
-
-
 ​    
 
 ### 3. COCO datasets
@@ -342,7 +353,6 @@ $ tree -L 1
 ├── 000000581482.jpg
 ├── 000000581615.jpg
 └── 000000581781.jpg
-
 ```
 
 ​    
@@ -473,7 +483,7 @@ YOLO Saving:   |█████████████████████�
 
 ​        
 
-#### Result    
+#### Result
 
 now check result files (`~/YOLO/`, `./manifast.txt`)
 
@@ -537,10 +547,12 @@ now check result files (`~/YOLO/`, `./manifast.txt`)
 
 ### TODO
 
-- [x] Support VOC Pascal Format
-- [x] Support Udacity Format
-- [x] Support COCO Format
-- [x] Support KITTI Format
-- [x] Write README
-- [x] Code Refactoring
-- [ ] Add example coco about each datasets
+- [ ] Refactoring (Release v2.0.0)
+      - [ ] Add strict Type Annotation in code
+      - [ ] Separate role in class more strictly 
+      - [ ] Rewrite README.md for more helpful use first
+      - [ ] Resolve the problem that strictly validation check when the trivial error
+      - [ ] Supported Multiprocessing
+      - [ ] Skip object class that don't want
+
+
