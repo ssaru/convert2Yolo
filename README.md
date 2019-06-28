@@ -547,12 +547,12 @@ now check result files (`~/YOLO/`, `./manifast.txt`)
 
 ### TODO
 
-- [ ] Refactoring (Release v2.0.0)
-      - [ ] Add strict Type Annotation in code
-      - [ ] Separate role in class more strictly 
-      - [ ] Rewrite README.md for more helpful use first
-      - [ ] Resolve the problem that strictly validation check when the trivial error
-      - [ ] Supported Multiprocessing
-      - [ ] Skip object class that don't want
+**Refactoring (Release v2.0.0)**
+- [ ] Add strict Type Annotation in code
+- [ ] Separate role in class more strictly 
+- [ ] Rewrite README.md for more helpful use first
+- [ ] Resolve the problem that strictly validation check when the trivial error
+- [ ] Supported Multiprocessing
+- [ ] Skip object class that don't want
 
 
