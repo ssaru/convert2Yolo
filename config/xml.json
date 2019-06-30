@@ -1,0 +1,51 @@
+{
+  "image_path": [{"hierarchy": ["annotation", "path"]},
+                 {"options": ["single"]},
+                 {"contents": []}],
+
+  "image_size": [ {"hierarchy": ["annotation", "size"]},
+                  {"options": ["multi"]},
+
+                  {"contents" : [
+                                  {"width":   [{"hierarchy": ["width"]},
+                                               {"options": ["single"]},
+                                               {"contents": []}]},
+
+                                  {"height":  [{"hierarchy": ["height"]},
+                                               {"options": ["single"]},
+                                               {"contents": []}]},
+
+                                  {"channel": [{"hierarchy": ["depth"]},
+                                               {"options": ["single"]},
+                                               {"contents": []}]}
+                                ]
+                  }
+                ],
+
+  "object":     [ {"hierarchy": ["annotation", "object"]},
+                  {"options": ["multi", "recursive"]},
+                  {"contents": [
+                                  {"class": [{"hierarchy": ["name"]},
+                                             {"options": ["single"]},
+                                             {"contents": []}]},
+                                  {"boundary_box": [{"hierarchy": ["bndbox"]},
+                                                    {"options": ["multi"]},
+                                                    {"contents": [
+                                                                    {"xmin": [{"hierarchy": ["xmin"]},
+                                                                              {"options": ["single"]},
+                                                                              {"contents": []}]},
+                                                                    {"ymin": [{"hierarchy": ["ymin"]},
+                                                                              {"options": ["single"]},
+                                                                              {"contents": []}]},
+                                                                    {"xmax": [{"hierarchy": ["xmax"]},
+                                                                              {"options": ["single"]},
+                                                                              {"contents": []}]},
+                                                                    {"ymax": [{"hierarchy": ["ymax"]},
+                                                                              {"options": ["single"]},
+                                                                              {"contents": []}]}
+                                                                  ]
+                                                    }]
+                                  }
+                  ]}
+                ]
+}

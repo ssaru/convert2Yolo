@@ -1,0 +1,14 @@
+{
+  "image_path": "",
+  "image_size": [{"width": ""},
+                 {"height": ""},
+                 {"channel": ""}],
+  "object": [{"class": ""},
+             {"boundary_box": [{"xmin": ""},
+                               {"ymin": ""},
+                               {"xmax": ""},
+                               {"ymax": ""}
+                              ]
+             }
+            ]
+}
