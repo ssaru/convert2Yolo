@@ -1,4 +1,4 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 import os
 import argparse
@@ -15,11 +15,14 @@ parser = argparse.ArgumentParser(description='Evaluate label Converting.')
 parser.add_argument('--datasets', type=str, help='type of datasets')
 parser.add_argument('--img_path', type=str, help='directory of image folder')
 parser.add_argument('--label_path', type=str, help='directory of label folder')
-parser.add_argument('--img_type', type=str, help='type of image', default='.jpg')
-parser.add_argument('--cls_list_file', type=str, help='directory of *.names file', default="./")
+parser.add_argument('--img_type', type=str,
+                    help='type of image', default='.jpg')
+parser.add_argument('--cls_list_file', type=str,
+                    help='directory of *.names file', default="./")
 
 
 args = parser.parse_args()
+
 
 def main():
     pp = pprint.PrettyPrinter(indent=4)
@@ -46,7 +49,7 @@ def main():
         kitti = KITTI()
         result, data = kitti.parse(label_path, img_path, img_type=img_type)
     elif datasets == "YOLO":
-        yolo =YOLO(os.path.abspath(cls_list))
+        yolo = YOLO(os.path.abspath(cls_list))
         result, data = yolo.parse(label_path, img_path, img_type=img_type)
 
     if result is True:
@@ -61,15 +64,16 @@ def main():
             pp.pprint(data[key])
             print("num_object : {}".format(data[key]["objects"]["num_obj"]))
             for idx in range(0, int(data[key]["objects"]["num_obj"])):
-                print("idx {}, name : {}, bndbox :{}".format(idx, data[key]["objects"][str(idx)]["name"], data[key]["objects"][str(idx)]["bndbox"]))
+                print("idx {}, name : {}, bndbox :{}".format(idx, data[key]["objects"][str(
+                    idx)]["name"], data[key]["objects"][str(idx)]["bndbox"]))
 
                 x0 = data[key]["objects"][str(idx)]["bndbox"]["xmin"]
                 y0 = data[key]["objects"][str(idx)]["bndbox"]["ymin"]
                 x1 = data[key]["objects"][str(idx)]["bndbox"]["xmax"]
                 y1 = data[key]["objects"][str(idx)]["bndbox"]["ymax"]
 
-                draw.rectangle(((x0,y0), (x1,y1)), outline='#00ff88')
-                draw.text((x0,y0), data[key]["objects"][str(idx)]["name"])
+                draw.rectangle(((x0, y0), (x1, y1)), outline='#00ff88')
+                draw.text((x0, y0), data[key]["objects"][str(idx)]["name"])
 
             del draw
             print("===============================================================================================\n\n")
@@ -80,6 +84,7 @@ def main():
 
     else:
         print("return value : {}, msg : {}, args: {}".format(result, data, args))
+
 
 if __name__ == '__main__':
     main()
