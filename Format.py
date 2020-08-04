@@ -295,9 +295,8 @@ class COCO:
     """
     Handler Class for COCO Format
     """
-
     @staticmethod
-    def parse(json_path):
+    def parse(json_path, img_path):
 
         try:
             json_data = json.load(open(json_path))
@@ -306,6 +305,7 @@ class COCO:
             cls_info = json_data["categories"]
 
             data = {}
+            cls_hierarchy = {}
 
             progress_length = len(json_data["annotations"])
             progress_cnt = 0
@@ -326,9 +326,18 @@ class COCO:
                             filename, img_width, img_height = \
                                 info["file_name"].split(".")[0], info["width"], info["height"]
 
+                            if img_width == 0 or img_height == 0:
+                                img = Image.open(os.path.join(img_path, info["file_name"]))
+                                img_width = str(img.size[0])
+                                img_height = str(img.size[1])
+
                 for category in cls_info:
                     if category["id"] == cls_id:
                         cls = category["name"]
+                        cls_parent = category['supercategory'] if 'supercategory' in category else None
+
+                        if cls not in cls_hierarchy:
+                            cls_hierarchy[cls] = cls_parent
 
                 size = {
                     "width": img_width,
@@ -369,7 +378,7 @@ class COCO:
                 progress_cnt += 1
 
             #print(json.dumps(data, indent=4, sort_keys = True))
-            return True, data
+            return True, data, cls_hierarchy
 
         except Exception as e:
 
@@ -414,7 +423,7 @@ class UDACITY:
                 ymax = float(raw_line[4])
                 cls = raw_line[6].split('"')[1]
 
-                if raw_line_length is 8:
+                if raw_line_length == 8:
                     state = raw_line[7].split('"')[1]
                     cls = cls + state
 
@@ -564,11 +573,12 @@ class YOLO:
     Handler Class for UDACITY Format
     """
 
-    def __init__(self, cls_list_path):
+    def __init__(self, cls_list_path, cls_hierarchy={}):
         with open(cls_list_path, 'r') as file:
             l = file.read().splitlines()
 
         self.cls_list = l
+        self.cls_hierarchy = cls_hierarchy
 
 
     def coordinateCvt2YOLO(self,size, box):
@@ -644,7 +654,6 @@ class YOLO:
                         "ymax": float(ymax)
                     }
 
-
                     obj_info = {
                         "name": name_id,
                         "bndbox": bndbox
@@ -701,7 +710,17 @@ class YOLO:
                     b = (float(xmin), float(xmax), float(ymin), float(ymax))
                     bb = self.coordinateCvt2YOLO((img_width, img_height), b)
 
-                    cls_id = self.cls_list.index(data[key]["objects"][str(idx)]["name"])
+                    cls_name = data[key]["objects"][str(idx)]["name"]
+                    def get_class_index(cls_list, cls_hierarchy, cls_name):
+                        if cls_name in cls_list:
+                            return cls_list.index(cls_name)
+
+                        if type(cls_hierarchy) is dict and cls_name in cls_hierarchy:
+                            return get_class_index(cls_list, cls_hierarchy, cls_hierarchy[cls_name])
+
+                        return None
+
+                    cls_id = get_class_index(self.cls_list, self.cls_hierarchy, cls_name)
 
                     bndbox = "".join(["".join([str(e), " "]) for e in bb])
                     contents = "".join([contents, str(cls_id), " ", bndbox[:-1], "\n"])
@@ -724,7 +743,7 @@ class YOLO:
 
             return False, msg
 
-    def save(self, data, save_path, img_path, img_type, manipast_path):
+    def save(self, data, save_path, img_path, img_type, manifest_path):
 
         try:
 
@@ -732,10 +751,15 @@ class YOLO:
             progress_cnt = 0
             printProgressBar(0, progress_length, prefix='\nYOLO Saving:'.ljust(15), suffix='Complete', length=40)
 
-            with open(os.path.abspath(os.path.join(manipast_path, "manifast.txt")), "w") as manipast_file:
+            if os.path.isdir(manifest_path):
+                manifest_abspath = os.path.join(manifest_path, "manifest.txt")
+            else:
+                manifest_abspath = manifest_path
+
+            with open(os.path.abspath(manifest_abspath), "w") as manifest_file:
 
                 for key in data:
-                    manipast_file.write(os.path.abspath(os.path.join(img_path, "".join([key, img_type, "\n"]))))
+                    manifest_file.write(os.path.abspath(os.path.join(img_path, "".join([key, img_type, "\n"]))))
 
                     with open(os.path.abspath(os.path.join(save_path, "".join([key, ".txt"]))), "w") as output_txt_file:
                         output_txt_file.write(data[key])

@@ -16,7 +16,7 @@ parser.add_argument('--img_path', type=str, help='directory of image folder')
 parser.add_argument('--label', type=str, help='directory of label folder or label file path')
 parser.add_argument('--convert_output_path', type=str, help='directory of label folder')
 parser.add_argument('--img_type', type=str, help='type of image')
-parser.add_argument('--manipast_path', type=str, help='directory of manipast file', default="./")
+parser.add_argument('--manifest_path', type=str, help='directory of manipast file', default="./")
 parser.add_argument('--cls_list_file', type=str, help='directory of *.names file', default="./")
 
 
@@ -35,7 +35,7 @@ def main(config):
             flag, data = yolo.generate(data)
             if flag == True:
                 flag, data = yolo.save(data, config["output_path"], config["img_path"] ,
-                                       config["img_type"], config["manipast_path"])
+                                       config["img_type"], config["manifest_path"])
 
                 if flag == False:
                     print("Saving Result : {}, msg : {}".format(flag, data))
@@ -50,16 +50,16 @@ def main(config):
 
     elif config["datasets"] == "COCO":
         coco = COCO()
-        yolo = YOLO(os.path.abspath(config["cls_list"]))
 
-        flag, data = coco.parse(config["label"])
+        flag, data, cls_hierarchy = coco.parse(config["label"], config["img_path"])
+        yolo = YOLO(os.path.abspath(config["cls_list"]), cls_hierarchy=cls_hierarchy)
 
         if flag == True:
             flag, data = yolo.generate(data)
 
             if flag == True:
                 flag, data = yolo.save(data, config["output_path"], config["img_path"],
-                                        config["img_type"], config["manipast_path"])
+                                        config["img_type"], config["manifest_path"])
 
                 if flag == False:
                     print("Saving Result : {}, msg : {}".format(flag, data))
@@ -81,7 +81,7 @@ def main(config):
 
             if flag == True:
                 flag, data = yolo.save(data, config["output_path"], config["img_path"],
-                                       config["img_type"], config["manipast_path"])
+                                       config["img_type"], config["manifest_path"])
 
                 if flag == False:
                     print("Saving Result : {}, msg : {}".format(flag, data))
@@ -103,7 +103,7 @@ def main(config):
 
             if flag == True:
                 flag, data = yolo.save(data, config["output_path"], config["img_path"],
-                                       config["img_type"], config["manipast_path"])
+                                       config["img_type"], config["manifest_path"])
 
                 if flag == False:
                     print("Saving Result : {}, msg : {}".format(flag, data))
@@ -124,7 +124,7 @@ if __name__ == '__main__':
         "img_path": args.img_path,
         "label": args.label,
         "img_type": args.img_type,
-        "manipast_path": args.manipast_path,
+        "manifest_path": args.manifest_path,
         "output_path": args.convert_output_path,
         "cls_list": args.cls_list_file,
     }

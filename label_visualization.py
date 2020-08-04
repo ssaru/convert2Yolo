@@ -35,7 +35,7 @@ def main():
 
     if datasets == "COCO":
         coco = COCO()
-        result, data = coco.parse(label_path)
+        result, data = coco.parse(label_path, img_path)
     elif datasets == "VOC":
         voc = VOC()
         result, data = voc.parse(label_path)
