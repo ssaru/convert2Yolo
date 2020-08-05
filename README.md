@@ -77,12 +77,12 @@ see [example.py](https://github.com/ssaru/convert2Yolo/blob/master/example.py)
      --img_type ".jpg"
      ```
 
-6. --manipast_path
+6. --manifest_path
 
    - it need train yolo model in [darknet framework](https://pjreddie.com/darknet/)
 
      ```bash
-     --manipast_path ./
+     --manifest_path ./
      ```
 
 7. --cla_list_file(`*.names`)
@@ -129,10 +129,10 @@ tvmonitor
 ### 1. example command
 
 ```bash
-python3 example.py --datasets [COCO/VOC/KITTI/UDACITY] --img_path <image_path> --label <label path or annotation file> --convert_output_path <output path> --img_type [".jpg" / ".png"] --manipast_path <output manipast file path> --cls_list_file <*.names file path>
+python3 example.py --datasets [COCO/VOC/KITTI/UDACITY] --img_path <image_path> --label <label path or annotation file> --convert_output_path <output path> --img_type [".jpg" / ".png"] --manifest_path <output manipast file path> --cls_list_file <*.names file path>
 
 >>
-ex) python3 example.py --datasets KITTI --img_path ./example/kitti/images/ --label ./example/kitti/labels/ --convert_output_path ./ --img_type ".jpg" --manipast_path ./ --cls_list_file names.txt
+ex) python3 example.py --datasets KITTI --img_path ./example/kitti/images/ --label ./example/kitti/labels/ --convert_output_path ./ --img_type ".jpg" --manifest_path ./ --cls_list_file names.txt
 ```
 
 ​    
@@ -239,7 +239,7 @@ tvmonitor
 
 now execute example code. 
 
-this example assign directory for saving  `YOLO` label `~/YOLO/` and assign `manipast_path` is `./`
+this example assign directory for saving  `YOLO` label `~/YOLO/` and assign `manifest_path` is `./`
 
 ​    
 
@@ -254,7 +254,7 @@ $ mkdir ~/YOLO
 **VOC convert to YOLO**
 
 ```bash
-python3 example.py --datasets VOC --img_path ~/VOCdevkit/VOC2012/JPEGImages/ --label ~/VOCdevkit/VOC2012/Annotations/ --convert_output_path ~/YOLO/ --img_type ".jpg" --manipast_path ./ --cls_list_file ~/VOC/voc.names
+python3 example.py --datasets VOC --img_path ~/VOCdevkit/VOC2012/JPEGImages/ --label ~/VOCdevkit/VOC2012/Annotations/ --convert_output_path ~/YOLO/ --img_type ".jpg" --manifest_path ./ --cls_list_file ~/VOC/voc.names
 
 >>
 VOC Parsing:   |████████████████████████████████████████| 100.0% (17125/17125) Complete
@@ -266,7 +266,7 @@ YOLO Saving:   |█████████████████████�
 
 #### Result
 
-now check result files (`~/YOLO/`, `./manifast.txt`)
+now check result files (`~/YOLO/`, `./manifest.txt`)
 
 ​    
 
@@ -301,10 +301,10 @@ $ cat 2012_004331.txt
 
 ​    
 
-**`./manifast.txt`**
+**`./manifest.txt`**
 
 ```bash
-$ cat ./manifast.txt
+$ cat ./manifest.txt
 
 >>
 ~/VOC/VOCdevkit/VOC2012/JPEGImages/2010_000420.jpg
@@ -458,7 +458,7 @@ airplane
 
 now execute example code. 
 
-this example assign directory for saving  `YOLO` label `~/YOLO/` and assign `manipast_path` is `./`
+this example assign directory for saving  `YOLO` label `~/YOLO/` and assign `manifest_path` is `./`
 
 ​    
 
@@ -473,7 +473,7 @@ $ mkdir ~/YOLO
 **COCO convert to YOLO**
 
 ```bash
-python3 example.py --datasets COCO --img_path ~/COCO/val2017/ --label ~/COCO/annotations/instances_val2017.json --convert_output_path ~/YOLO/ --img_type ".jpg" --manipast_path ./ --cls_list_file ~/COCO/coco.names
+python3 example.py --datasets COCO --img_path ~/COCO/val2017/ --label ~/COCO/annotations/instances_val2017.json --convert_output_path ~/YOLO/ --img_type ".jpg" --manifest_path ./ --cls_list_file ~/COCO/coco.names
 
 >>
 COCO Parsing:  |████████████████████████████████████████| 100.0% (36781/36781) Complete
@@ -485,7 +485,7 @@ YOLO Saving:   |█████████████████████�
 
 #### Result
 
-now check result files (`~/YOLO/`, `./manifast.txt`)
+now check result files (`~/YOLO/`, `./manifest.txt`)
 
 **`~/YOLO/`**
 
@@ -527,7 +527,7 @@ now check result files (`~/YOLO/`, `./manifast.txt`)
 
 ​        
 
-**`./manifast.txt`**
+**`./manifest.txt`**
 
 ```bash
 ~/COCO/val2017/000000289343.jpg

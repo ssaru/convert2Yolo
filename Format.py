@@ -1,4 +1,4 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 import sys
 import os
@@ -53,7 +53,8 @@ from xml.etree.ElementTree import dump
 }
 """
 
-def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
+
+def printProgressBar(iteration, total, prefix='', suffix='', decimals=1, length=100, fill='█'):
     """
     Call in a loop to create terminal progress bar
     @params:
@@ -65,13 +66,16 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
         length      - Optional  : character length of bar (Int)
         fill        - Optional  : bar fill character (Str)
     """
-    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    percent = ("{0:." + str(decimals) + "f}").format(100 *
+                                                     (iteration / float(total)))
     filledLength = int(length * iteration // total)
     bar = fill * filledLength + '-' * (length - filledLength)
-    print('\r%s|%s| %s%% (%s/%s)  %s' % (prefix, bar, percent, iteration, total, suffix), end = '\r')
+    print('\r%s|%s| %s%% (%s/%s)  %s' %
+          (prefix, bar, percent, iteration, total, suffix), end='\r')
     # Print New Line on Complete
     if iteration == total:
         print("\n")
+
 
 class VOC:
     """
@@ -100,7 +104,8 @@ class VOC:
 
             progress_length = len(data)
             progress_cnt = 0
-            printProgressBar(0, progress_length, prefix='\nVOC Generate:'.ljust(15), suffix='Complete', length=40)
+            printProgressBar(0, progress_length, prefix='\nVOC Generate:'.ljust(
+                15), suffix='Complete', length=40)
 
             for key in data:
                 element = data[key]
@@ -152,19 +157,23 @@ class VOC:
                     xml_bndbox = Element("bndbox")
 
                     obj_xmin = Element("xmin")
-                    obj_xmin.text = element["objects"][str(i)]["bndbox"]["xmin"]
+                    obj_xmin.text = element["objects"][str(
+                        i)]["bndbox"]["xmin"]
                     xml_bndbox.append(obj_xmin)
 
                     obj_ymin = Element("ymin")
-                    obj_ymin.text = element["objects"][str(i)]["bndbox"]["ymin"]
+                    obj_ymin.text = element["objects"][str(
+                        i)]["bndbox"]["ymin"]
                     xml_bndbox.append(obj_ymin)
 
                     obj_xmax = Element("xmax")
-                    obj_xmax.text = element["objects"][str(i)]["bndbox"]["xmax"]
+                    obj_xmax.text = element["objects"][str(
+                        i)]["bndbox"]["xmax"]
                     xml_bndbox.append(obj_xmax)
 
                     obj_ymax = Element("ymax")
-                    obj_ymax.text = element["objects"][str(i)]["bndbox"]["ymax"]
+                    obj_ymax.text = element["objects"][str(
+                        i)]["bndbox"]["ymax"]
                     xml_bndbox.append(obj_ymax)
                     xml_object.append(xml_bndbox)
 
@@ -174,7 +183,8 @@ class VOC:
 
                 xml_list[key.split(".")[0]] = xml_annotation
 
-                printProgressBar(progress_cnt + 1, progress_length, prefix='VOC Generate:'.ljust(15), suffix='Complete', length=40)
+                printProgressBar(progress_cnt + 1, progress_length,
+                                 prefix='VOC Generate:'.ljust(15), suffix='Complete', length=40)
                 progress_cnt += 1
 
             return True, xml_list
@@ -184,7 +194,8 @@ class VOC:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
-            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(
+                e, exc_type, fname, exc_tb.tb_lineno)
 
             return False, msg
 
@@ -196,14 +207,16 @@ class VOC:
 
             progress_length = len(xml_list)
             progress_cnt = 0
-            printProgressBar(0, progress_length, prefix='\nVOC Save:'.ljust(10), suffix='Complete', length=40)
+            printProgressBar(0, progress_length, prefix='\nVOC Save:'.ljust(
+                10), suffix='Complete', length=40)
 
             for key in xml_list:
                 xml = xml_list[key]
                 filepath = os.path.join(path, "".join([key, ".xml"]))
                 ElementTree(xml).write(filepath)
 
-                printProgressBar(progress_cnt + 1, progress_length, prefix='VOC Save:'.ljust(15), suffix='Complete', length=40)
+                printProgressBar(progress_cnt + 1, progress_length,
+                                 prefix='VOC Save:'.ljust(15), suffix='Complete', length=40)
                 progress_cnt += 1
 
             return True, None
@@ -213,7 +226,8 @@ class VOC:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
-            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(
+                e, exc_type, fname, exc_tb.tb_lineno)
 
             return False, msg
 
@@ -221,16 +235,18 @@ class VOC:
     def parse(path):
         try:
 
-            (dir_path, dir_names, filenames) = next(os.walk(os.path.abspath(path)))
+            (dir_path, dir_names, filenames) = next(
+                os.walk(os.path.abspath(path)))
 
             data = {}
             progress_length = len(filenames)
             progress_cnt = 0
-            printProgressBar(0, progress_length, prefix='\nVOC Parsing:'.ljust(15), suffix='Complete', length=40)
+            printProgressBar(0, progress_length, prefix='\nVOC Parsing:'.ljust(
+                15), suffix='Complete', length=40)
             for filename in filenames:
 
                 xml = open(os.path.join(dir_path, filename), "r")
-    
+
                 tree = Et.parse(xml)
                 root = tree.getroot()
 
@@ -249,7 +265,7 @@ class VOC:
                 obj = {
                     "num_obj": len(objects)
                 }
-    
+
                 obj_index = 0
                 for _object in objects:
 
@@ -276,7 +292,8 @@ class VOC:
 
                 data[root.find("filename").text.split(".")[0]] = annotation
 
-                printProgressBar(progress_cnt + 1, progress_length, prefix='VOC Parsing:'.ljust(15), suffix='Complete', length=40)
+                printProgressBar(progress_cnt + 1, progress_length,
+                                 prefix='VOC Parsing:'.ljust(15), suffix='Complete', length=40)
                 progress_cnt += 1
 
             return True, data
@@ -286,7 +303,8 @@ class VOC:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
-            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(
+                e, exc_type, fname, exc_tb.tb_lineno)
 
             return False, msg
 
@@ -295,9 +313,8 @@ class COCO:
     """
     Handler Class for COCO Format
     """
-
     @staticmethod
-    def parse(json_path):
+    def parse(json_path, img_path):
 
         try:
             json_data = json.load(open(json_path))
@@ -306,10 +323,12 @@ class COCO:
             cls_info = json_data["categories"]
 
             data = {}
+            cls_hierarchy = {}
 
             progress_length = len(json_data["annotations"])
             progress_cnt = 0
-            printProgressBar(0, progress_length, prefix='\nCOCO Parsing:'.ljust(15), suffix='Complete', length=40)
+            printProgressBar(0, progress_length, prefix='\nCOCO Parsing:'.ljust(
+                15), suffix='Complete', length=40)
 
             for anno in json_data["annotations"]:
 
@@ -322,13 +341,24 @@ class COCO:
                 cls = None
 
                 for info in images_info:
-                        if info["id"] == image_id:
-                            filename, img_width, img_height = \
-                                info["file_name"].split(".")[0], info["width"], info["height"]
+                    if info["id"] == image_id:
+                        filename, img_width, img_height = \
+                            info["file_name"].split(
+                                ".")[0], info["width"], info["height"]
+
+                        if img_width == 0 or img_height == 0:
+                            img = Image.open(os.path.join(
+                                img_path, info["file_name"]))
+                            img_width = str(img.size[0])
+                            img_height = str(img.size[1])
 
                 for category in cls_info:
                     if category["id"] == cls_id:
                         cls = category["name"]
+                        cls_parent = category['supercategory'] if 'supercategory' in category else None
+
+                        if cls not in cls_hierarchy:
+                            cls_hierarchy[cls] = cls_parent
 
                 size = {
                     "width": img_width,
@@ -365,20 +395,23 @@ class COCO:
                         "objects": obj
                     }
 
-                printProgressBar(progress_cnt + 1, progress_length, prefix='COCO Parsing:'.ljust(15), suffix='Complete', length=40)
+                printProgressBar(progress_cnt + 1, progress_length,
+                                 prefix='COCO Parsing:'.ljust(15), suffix='Complete', length=40)
                 progress_cnt += 1
 
             #print(json.dumps(data, indent=4, sort_keys = True))
-            return True, data
+            return True, data, cls_hierarchy
 
         except Exception as e:
 
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
-            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(
+                e, exc_type, fname, exc_tb.tb_lineno)
 
             return False, msg
+
 
 class UDACITY:
     """
@@ -397,12 +430,12 @@ class UDACITY:
             raw_f.seek(0)
 
             progress_cnt = 0
-            printProgressBar(0, progress_length, prefix='\nUDACITY Parsing:'.ljust(15), suffix='Complete', length=40)
+            printProgressBar(0, progress_length, prefix='\nUDACITY Parsing:'.ljust(
+                15), suffix='Complete', length=40)
 
             data = {}
 
             for line in csv_f:
-
 
                 raw_line = line[0].split(" ")
                 raw_line_length = len(raw_line)
@@ -414,11 +447,12 @@ class UDACITY:
                 ymax = float(raw_line[4])
                 cls = raw_line[6].split('"')[1]
 
-                if raw_line_length is 8:
+                if raw_line_length == 8:
                     state = raw_line[7].split('"')[1]
                     cls = cls + state
 
-                img = Image.open(os.path.join(img_path, "".join([filename, ".jpg"])))
+                img = Image.open(os.path.join(
+                    img_path, "".join([filename, ".jpg"])))
                 img_width = str(img.size[0])
                 img_height = str(img.size[1])
                 img_depth = 3
@@ -467,9 +501,11 @@ class UDACITY:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
-            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(
+                e, exc_type, fname, exc_tb.tb_lineno)
 
             return False, msg
+
 
 class KITTI:
     """
@@ -481,13 +517,15 @@ class KITTI:
 
         try:
             with open("box_groups.txt", "w") as bboxGroups:
-                (dir_path, dir_names, filenames) = next(os.walk(os.path.abspath(label_path)))
+                (dir_path, dir_names, filenames) = next(
+                    os.walk(os.path.abspath(label_path)))
 
                 data = {}
 
                 progress_length = len(filenames)
                 progress_cnt = 0
-                printProgressBar(0, progress_length, prefix='\nKITTI Parsing:'.ljust(15), suffix='Complete', length=40)
+                printProgressBar(0, progress_length, prefix='\nKITTI Parsing:'.ljust(
+                    15), suffix='Complete', length=40)
 
                 for filename in filenames:
 
@@ -495,7 +533,8 @@ class KITTI:
 
                     filename = filename.split(".")[0]
 
-                    img = Image.open(os.path.join(img_path, "".join([filename, img_type])))
+                    img = Image.open(os.path.join(
+                        img_path, "".join([filename, img_type])))
                     img_width = str(img.size[0])
                     img_height = str(img.size[1])
                     img_depth = 3
@@ -527,17 +566,18 @@ class KITTI:
                             "ymax": float(ymax)
                         }
 
-                        bboxGroups.write("{} {} {} {}\n".format(float(xmin), float(ymin), float(xmax)-float(xmin), float(ymax)-float(ymin)))
+                        bboxGroups.write("{} {} {} {}\n".format(float(xmin), float(
+                            ymin), float(xmax)-float(xmin), float(ymax)-float(ymin)))
 
                         obj_info = {
                             "name": name,
                             "bndbox": bndbox
                         }
 
-                        obj[str(obj_cnt)] =obj_info
+                        obj[str(obj_cnt)] = obj_info
                         obj_cnt += 1
 
-                    obj["num_obj"] =  obj_cnt
+                    obj["num_obj"] = obj_cnt
 
                     data[filename] = {
                         "size": size,
@@ -555,23 +595,25 @@ class KITTI:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
-            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(
+                e, exc_type, fname, exc_tb.tb_lineno)
 
             return False, msg
+
 
 class YOLO:
     """
     Handler Class for UDACITY Format
     """
 
-    def __init__(self, cls_list_path):
+    def __init__(self, cls_list_path, cls_hierarchy={}):
         with open(cls_list_path, 'r') as file:
             l = file.read().splitlines()
 
         self.cls_list = l
+        self.cls_hierarchy = cls_hierarchy
 
-
-    def coordinateCvt2YOLO(self,size, box):
+    def coordinateCvt2YOLO(self, size, box):
         dw = 1. / size[0]
         dh = 1. / size[1]
 
@@ -589,18 +631,20 @@ class YOLO:
         w = w * dw
         y = y * dh
         h = h * dh
-        return (round(x,3), round(y,3), round(w,3), round(h,3))
+        return (round(x, 3), round(y, 3), round(w, 3), round(h, 3))
 
     def parse(self, label_path, img_path, img_type=".png"):
         try:
 
-            (dir_path, dir_names, filenames) = next(os.walk(os.path.abspath(label_path)))
+            (dir_path, dir_names, filenames) = next(
+                os.walk(os.path.abspath(label_path)))
 
             data = {}
 
             progress_length = len(filenames)
             progress_cnt = 0
-            printProgressBar(0, progress_length, prefix='\nYOLO Parsing:'.ljust(15), suffix='Complete', length=40)
+            printProgressBar(0, progress_length, prefix='\nYOLO Parsing:'.ljust(
+                15), suffix='Complete', length=40)
 
             for filename in filenames:
 
@@ -608,7 +652,8 @@ class YOLO:
 
                 filename = filename.split(".")[0]
 
-                img = Image.open(os.path.join(img_path, "".join([filename, img_type])))
+                img = Image.open(os.path.join(
+                    img_path, "".join([filename, img_type])))
                 img_width = str(img.size[0])
                 img_height = str(img.size[1])
                 img_depth = 3
@@ -627,7 +672,8 @@ class YOLO:
                     name_id = elements[0]
 
                     xminAddxmax = float(elements[1]) * (2.0 * float(img_width))
-                    yminAddymax = float(elements[2]) * (2.0 * float(img_height))
+                    yminAddymax = float(
+                        elements[2]) * (2.0 * float(img_height))
 
                     w = float(elements[3]) * float(img_width)
                     h = float(elements[4]) * float(img_height)
@@ -644,16 +690,15 @@ class YOLO:
                         "ymax": float(ymax)
                     }
 
-
                     obj_info = {
                         "name": name_id,
                         "bndbox": bndbox
                     }
 
-                    obj[str(obj_cnt)] =obj_info
+                    obj[str(obj_cnt)] = obj_info
                     obj_cnt += 1
 
-                obj["num_obj"] =  obj_cnt
+                obj["num_obj"] = obj_cnt
 
                 data[filename] = {
                     "size": size,
@@ -671,7 +716,8 @@ class YOLO:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
-            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(
+                e, exc_type, fname, exc_tb.tb_lineno)
 
             return False, msg
 
@@ -679,9 +725,10 @@ class YOLO:
 
         try:
 
-            progress_length =len(data)
+            progress_length = len(data)
             progress_cnt = 0
-            printProgressBar(0, progress_length, prefix='\nYOLO Generating:'.ljust(15), suffix='Complete', length=40)
+            printProgressBar(0, progress_length, prefix='\nYOLO Generating:'.ljust(
+                15), suffix='Complete', length=40)
 
             result = {}
 
@@ -701,10 +748,23 @@ class YOLO:
                     b = (float(xmin), float(xmax), float(ymin), float(ymax))
                     bb = self.coordinateCvt2YOLO((img_width, img_height), b)
 
-                    cls_id = self.cls_list.index(data[key]["objects"][str(idx)]["name"])
+                    cls_name = data[key]["objects"][str(idx)]["name"]
+
+                    def get_class_index(cls_list, cls_hierarchy, cls_name):
+                        if cls_name in cls_list:
+                            return cls_list.index(cls_name)
+
+                        if type(cls_hierarchy) is dict and cls_name in cls_hierarchy:
+                            return get_class_index(cls_list, cls_hierarchy, cls_hierarchy[cls_name])
+
+                        return None
+
+                    cls_id = get_class_index(
+                        self.cls_list, self.cls_hierarchy, cls_name)
 
                     bndbox = "".join(["".join([str(e), " "]) for e in bb])
-                    contents = "".join([contents, str(cls_id), " ", bndbox[:-1], "\n"])
+                    contents = "".join(
+                        [contents, str(cls_id), " ", bndbox[:-1], "\n"])
 
                 result[key] = contents
 
@@ -720,26 +780,33 @@ class YOLO:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
-            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(
+                e, exc_type, fname, exc_tb.tb_lineno)
 
             return False, msg
 
-    def save(self, data, save_path, img_path, img_type, manipast_path):
+    def save(self, data, save_path, img_path, img_type, manifest_path):
 
         try:
 
             progress_length = len(data)
             progress_cnt = 0
-            printProgressBar(0, progress_length, prefix='\nYOLO Saving:'.ljust(15), suffix='Complete', length=40)
+            printProgressBar(0, progress_length, prefix='\nYOLO Saving:'.ljust(
+                15), suffix='Complete', length=40)
 
-            with open(os.path.abspath(os.path.join(manipast_path, "manifast.txt")), "w") as manipast_file:
+            if os.path.isdir(manifest_path):
+                manifest_abspath = os.path.join(manifest_path, "manifest.txt")
+            else:
+                manifest_abspath = manifest_path
+
+            with open(os.path.abspath(manifest_abspath), "w") as manifest_file:
 
                 for key in data:
-                    manipast_file.write(os.path.abspath(os.path.join(img_path, "".join([key, img_type, "\n"]))))
+                    manifest_file.write(os.path.abspath(os.path.join(
+                        img_path, "".join([key, img_type, "\n"]))))
 
                     with open(os.path.abspath(os.path.join(save_path, "".join([key, ".txt"]))), "w") as output_txt_file:
                         output_txt_file.write(data[key])
-
 
                     printProgressBar(progress_cnt + 1, progress_length, prefix='YOLO Saving:'.ljust(15),
                                      suffix='Complete',
@@ -753,6 +820,7 @@ class YOLO:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
-            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(e, exc_type, fname, exc_tb.tb_lineno)
+            msg = "ERROR : {}, moreInfo : {}\t{}\t{}".format(
+                e, exc_type, fname, exc_tb.tb_lineno)
 
             return False, msg
